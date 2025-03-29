@@ -1,6 +1,6 @@
 import random
 import os
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 
@@ -44,7 +44,11 @@ def start(update: Update, context: CallbackContext) -> int:
         update.message.reply_text("У вас нет доступа к этому боту.")
         return ConversationHandler.END
 
-    update.message.reply_text("Пожалуйста, введите ваш логин:")
+    # Создание кнопки меню
+    keyboard = [[KeyboardButton("/start")]]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
+    update.message.reply_text("Родной, дай логин, есть же...:", reply_markup=reply_markup)
     return LOGIN
 
 def login(update: Update, context: CallbackContext) -> int:
@@ -56,7 +60,7 @@ def login(update: Update, context: CallbackContext) -> int:
     login = update.message.text
     password = generate_password()
     
-    text = f"Здравствуйте, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
+    text = f"Салам, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
     update.message.reply_text(text, parse_mode='HTML')
     return ConversationHandler.END
 
@@ -89,3 +93,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
