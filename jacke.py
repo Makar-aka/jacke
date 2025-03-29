@@ -1,4 +1,3 @@
-
 import random
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
@@ -32,7 +31,14 @@ def start(update: Update, context: CallbackContext) -> None:
 
 def main():
     # Вставьте сюда ваш токен
-    updater = Updater("7887836071:AAGSslTBhMibzZlJmv7TNzFHS6_EtxYm9S0")
+    token = "7887836071:AAGSslTBhMibzZlJmv7TNzFHS6_EtxYm9S0"
+    
+    request_kwargs = {
+        'read_timeout': 20,  # Увеличиваем таймаут чтения до 20 секунд
+        'connect_timeout': 10,  # Увеличиваем таймаут соединения до 10 секунд
+    }
+    
+    updater = Updater(token, request_kwargs=request_kwargs)
     
     dispatcher = updater.dispatcher
     
