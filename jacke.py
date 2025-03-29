@@ -1,6 +1,7 @@
 import random
 import os
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+import logging
+from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 
@@ -8,6 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 token = os.getenv("TELEGRAM_TOKEN")
 allowed_users = os.getenv("ALLOWED_USERS")
+log_level = os.getenv("LOG_LEVEL", "INFO")
+log_file = os.getenv("LOG_FILE", "bot.log")
 
 if not token or not allowed_users:
     raise ValueError("Необходимо установить TELEGRAM_TOKEN и ALLOWED_USERS в файле .env")
@@ -44,11 +47,7 @@ def start(update: Update, context: CallbackContext) -> int:
         update.message.reply_text("У вас нет доступа к этому боту.")
         return ConversationHandler.END
 
-    # Создание кнопки меню
-    keyboard = [[KeyboardButton("Генерим")]]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-    update.message.reply_text("Родной, дай логин, есть же...:", reply_markup=reply_markup)
+    update.message.reply_text("Пожалуйста, введите ваш логин:")
     return LOGIN
 
 def login(update: Update, context: CallbackContext) -> int:
@@ -60,7 +59,7 @@ def login(update: Update, context: CallbackContext) -> int:
     login = update.message.text
     password = generate_password()
     
-    text = f"Салам, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
+    text = f"Здравствуйте, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
     update.message.reply_text(text, parse_mode='HTML')
     return ConversationHandler.END
 
@@ -69,6 +68,16 @@ def cancel(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 def main():
+    # Настройка логирования
+    logging.basicConfig(
+        filename=log_file,
+        level=getattr(logging, log_level.upper(), logging.INFO),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    )
+    
+    logger = logging.getLogger(__name__)
+    logger.info("Бот запущен")
+
     request_kwargs = {
         'read_timeout': 20,  # Увеличиваем таймаут чтения до 20 секунд
         'connect_timeout': 10,  # Увеличиваем таймаут соединения до 10 секунд
@@ -93,4 +102,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
