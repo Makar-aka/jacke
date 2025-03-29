@@ -17,16 +17,8 @@ spec = ["*", "-", "_", "+", "?", "%", "~", "#", "$"]
 LOGIN = range(1)
 
 def generate_password():
-    min_letter_random = random.choice(min_letter)
-    min_letter_random_two = random.choice(min_letter)
-    max_letter_random = random.choice(max_letter)
-    max_letter_random_two = random.choice(max_letter)
-    numeral_random = random.choice(numeral)
-    numeral_random_two = random.choice(numeral)
-    spec_random = random.choice(spec)
-    spec_random_two = random.choice(spec)
-    
-    password = min_letter_random + max_letter_random + numeral_random + spec_random + min_letter_random_two + max_letter_random_two + numeral_random_two + spec_random_two
+    characters = min_letter + max_letter + numeral + spec
+    password = ''.join(random.choice(characters) for _ in range(9))
     return password
 
 def start(update: Update, context: CallbackContext) -> int:
@@ -70,3 +62,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
