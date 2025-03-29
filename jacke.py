@@ -3,7 +3,7 @@ import random
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 
-# Списки символов для генерации пароля
+# РЎРїРёСЃРєРё СЃРёРјРІРѕР»РѕРІ РґР»СЏ РіРµРЅРµСЂР°С†РёРё РїР°СЂРѕР»СЏ
 min_letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "y", "x", "z"]
 max_letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "X", "Z"]
 numeral = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
@@ -27,11 +27,11 @@ def start(update: Update, context: CallbackContext) -> None:
     login = user.username if user.username else "user"
     password = generate_password()
     
-    text = f"Здравствуйте, {login}.\n\nЛогин: {login.lower()}\nПароль: {password}"
+    text = f"Р—РґСЂР°РІСЃС‚РІСѓР№С‚Рµ, {login}.\n\nР›РѕРіРёРЅ: {login.lower()}\nРџР°СЂРѕР»СЊ: {password}"
     update.message.reply_text(text)
 
 def main():
-    # Вставьте сюда ваш токен
+    # Р’СЃС‚Р°РІСЊС‚Рµ СЃСЋРґР° РІР°С€ С‚РѕРєРµРЅ
     updater = Updater("7887836071:AAGSslTBhMibzZlJmv7TNzFHS6_EtxYm9S0")
     
     dispatcher = updater.dispatcher
