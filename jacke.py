@@ -28,6 +28,10 @@ def generate_password():
     password = ''.join(random.choice(characters) for _ in range(9))
     return password
 
+def escape_markdown(text: str) -> str:
+    escape_chars = r'\_*[]()~`>#+-=|{}.!'
+    return ''.join(f'\\{char}' if char in escape_chars else char for char in text)
+
 def start(update: Update, context: CallbackContext) -> int:
     user_id = update.message.from_user.id
     if user_id not in ALLOWED_USERS:
@@ -46,7 +50,7 @@ def login(update: Update, context: CallbackContext) -> int:
     login = update.message.text
     password = generate_password()
     
-    text = f"Здравствуйте, {login}.\n\nЛогин: `{login.lower()}`\nПароль: `{password}`"
+    text = f"Здравствуйте, {escape_markdown(login)}.\n\nЛогин: `{escape_markdown(login.lower())}`\nПароль: `{escape_markdown(password)}`"
     update.message.reply_text(text, parse_mode='MarkdownV2')
     return ConversationHandler.END
 
