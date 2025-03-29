@@ -2,7 +2,7 @@ import random
 import os
 import logging
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler, CallbackQueryHandler
 from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
@@ -68,6 +68,12 @@ def login(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(text, parse_mode='HTML', reply_markup=reply_markup)
     return ConversationHandler.END
 
+def button(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    if query.data == 'start':
+        start(update, context)
+
 def cancel(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Операция отменена.")
     return ConversationHandler.END
@@ -76,7 +82,7 @@ def main():
     # Настройка логирования
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        format='%(asctime)s - %(name)s - %(levellevel)s - %(message)s',
         handlers=[
             logging.FileHandler(log_file),
             logging.StreamHandler()
@@ -104,6 +110,7 @@ def main():
     )
     
     dispatcher.add_handler(conv_handler)
+    dispatcher.add_handler(CallbackQueryHandler(button))
     
     updater.start_polling()
     updater.idle()
