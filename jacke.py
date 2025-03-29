@@ -45,7 +45,7 @@ def start(update: Update, context: CallbackContext) -> int:
         return ConversationHandler.END
 
     # Создание кнопки меню
-    keyboard = [[KeyboardButton("/start")]]
+    keyboard = [[KeyboardButton("Генерим")]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     update.message.reply_text("Родной, дай логин, есть же...:", reply_markup=reply_markup)
