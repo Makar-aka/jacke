@@ -46,8 +46,8 @@ def login(update: Update, context: CallbackContext) -> int:
     login = update.message.text
     password = generate_password()
     
-    text = f"Здравствуйте, {login}.\n\nЛогин: {login.lower()}\nПароль: {password}"
-    update.message.reply_text(text)
+    text = f"Здравствуйте, {login}.\n\nЛогин: `{login.lower()}`\nПароль: `{password}`"
+    update.message.reply_text(text, parse_mode='MarkdownV2')
     return ConversationHandler.END
 
 def cancel(update: Update, context: CallbackContext) -> int:
