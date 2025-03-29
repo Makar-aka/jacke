@@ -56,7 +56,7 @@ def login(update: Update, context: CallbackContext) -> int:
     login = update.message.text
     password = generate_password()
     
-    text = f"Здравствуйте, {escape_html(login)}.<br><br>Логин: <code>{escape_html(login.lower())}</code><br>Пароль: <code>{escape_html(password)}</code>"
+    text = f"Здравствуйте, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
     update.message.reply_text(text, parse_mode='HTML')
     return ConversationHandler.END
 
