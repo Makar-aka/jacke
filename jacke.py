@@ -82,7 +82,7 @@ def main():
     # Настройка логирования
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levellevel)s - %(message)s',
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.FileHandler(log_file),
             logging.StreamHandler()
