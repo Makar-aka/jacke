@@ -72,7 +72,8 @@ def button(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
     query.answer()
     if query.data == 'start':
-        start(update, context)
+        context.bot.send_message(chat_id=query.message.chat_id, text="Пожалуйста, введите ваш логин:")
+        return LOGIN
 
 def cancel(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Операция отменена.")
@@ -117,6 +118,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
