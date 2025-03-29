@@ -1,7 +1,7 @@
 import random
 import os
 import logging
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 
@@ -63,13 +63,18 @@ def login(update: Update, context: CallbackContext) -> int:
             f"Логин: <code>{escape_html(login_text.lower())}</code>\n"
             f"Пароль: <code>{escape_html(password)}</code>")
     
-    # Создаем реплай-клавиатуру с кнопкой, которая отправляет команду /start
-    keyboard = [[KeyboardButton("/start")]]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    # Создание кнопки
+    keyboard = [[InlineKeyboardButton("Начать заново", callback_data='start')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
     
     update.message.reply_text(text, parse_mode='HTML', reply_markup=reply_markup)
-    # Завершаем диалог, чтобы повторный ввод команды /start запускал новый цикл
     return ConversationHandler.END
+
+def button(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    query.answer()
+    if query.data == 'start':
+        start(update, context)
 
 def cancel(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Операция отменена.")
@@ -105,10 +110,12 @@ def main():
     )
     
     dispatcher.add_handler(conv_handler)
+    dispatcher.add_handler(CallbackQueryHandler(button))
     
     updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
     main()
+
 
