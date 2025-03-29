@@ -70,9 +70,12 @@ def cancel(update: Update, context: CallbackContext) -> int:
 def main():
     # Настройка логирования
     logging.basicConfig(
-        filename=log_file,
         level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()
+        ]
     )
     
     logger = logging.getLogger(__name__)
@@ -102,5 +105,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
