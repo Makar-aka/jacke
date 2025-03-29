@@ -1,8 +1,8 @@
 import random
 import os
 import logging
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler, CallbackQueryHandler
+from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
@@ -56,31 +56,26 @@ def login(update: Update, context: CallbackContext) -> int:
         update.message.reply_text("У вас нет доступа к этому боту.")
         return ConversationHandler.END
 
-    login = update.message.text
+    login_text = update.message.text
     password = generate_password()
     
-    text = f"Здравствуйте, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
+    text = (f"Здравствуйте, {escape_html(login_text)}.\n\n"
+            f"Логин: <code>{escape_html(login_text.lower())}</code>\n"
+            f"Пароль: <code>{escape_html(password)}</code>")
     
-    # Создание кнопки
-    keyboard = [[InlineKeyboardButton("Начать заново", callback_data='start')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-
+    # Создаем реплай-клавиатуру с кнопкой, которая отправляет команду /start
+    keyboard = [[KeyboardButton("/start")]]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    
     update.message.reply_text(text, parse_mode='HTML', reply_markup=reply_markup)
+    # Завершаем диалог, чтобы повторный ввод команды /start запускал новый цикл
     return ConversationHandler.END
-
-def button(update: Update, context: CallbackContext) -> None:
-    query = update.callback_query
-    query.answer()
-    if query.data == 'start':
-        context.bot.send_message(chat_id=query.message.chat_id, text="Пожалуйста, введите ваш логин:")
-        return LOGIN
 
 def cancel(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Операция отменена.")
     return ConversationHandler.END
 
 def main():
-    # Настройка логирования
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -92,14 +87,13 @@ def main():
     
     logger = logging.getLogger(__name__)
     logger.info("Бот запущен")
-
+    
     request_kwargs = {
-        'read_timeout': 20,  # Увеличиваем таймаут чтения до 20 секунд
-        'connect_timeout': 10,  # Увеличиваем таймаут соединения до 10 секунд
+        'read_timeout': 20,
+        'connect_timeout': 10,
     }
     
     updater = Updater(token, request_kwargs=request_kwargs)
-    
     dispatcher = updater.dispatcher
     
     conv_handler = ConversationHandler(
@@ -111,10 +105,10 @@ def main():
     )
     
     dispatcher.add_handler(conv_handler)
-    dispatcher.add_handler(CallbackQueryHandler(button))
     
     updater.start_polling()
     updater.idle()
 
 if __name__ == '__main__':
     main()
+
