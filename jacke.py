@@ -2,7 +2,7 @@ import random
 import os
 import logging
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler, CallbackQueryHandler
 from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
@@ -81,6 +81,7 @@ def cancel(update: Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 def main():
+    # Настройка логирования
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -117,5 +118,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
