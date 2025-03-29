@@ -1,7 +1,7 @@
 import random
 import os
 import logging
-from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
+from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 
@@ -61,9 +61,9 @@ def login(update: Update, context: CallbackContext) -> int:
     
     text = f"Здравствуйте, {escape_html(login)}.\n\nЛогин: <code>{escape_html(login.lower())}</code>\nПароль: <code>{escape_html(password)}</code>"
     
-    # Создание кнопки меню
-    keyboard = [[KeyboardButton("/start")]]
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    # Создание кнопки
+    keyboard = [[InlineKeyboardButton("Начать заново", callback_data='start')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
 
     update.message.reply_text(text, parse_mode='HTML', reply_markup=reply_markup)
     return ConversationHandler.END
@@ -110,5 +110,6 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
 
