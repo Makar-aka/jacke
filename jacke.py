@@ -47,7 +47,7 @@ def start(update: Update, context: CallbackContext) -> int:
         update.message.reply_text("У вас нет доступа к этому боту.")
         return ConversationHandler.END
 
-    update.message.reply_text("Пожалуйста, введите ваш логин:")
+    update.message.reply_text("Есть че?")
     return LOGIN
 
 def login(update: Update, context: CallbackContext) -> int:
@@ -59,7 +59,7 @@ def login(update: Update, context: CallbackContext) -> int:
     login_text = update.message.text
     password = generate_password()
     
-    text = (f"Здравствуйте.\n"
+    text = (f"Есть же!\n"
             f"Логин: <code>{escape_html(login_text.lower())}</code>\n"
             f"Пароль: <code>{escape_html(password)}</code>")
     
