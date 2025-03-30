@@ -1,8 +1,8 @@
 import random
 import os
 import logging
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler, CallbackQueryHandler
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
 from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
@@ -63,19 +63,8 @@ def login(update: Update, context: CallbackContext) -> int:
             f"Логин: <code>{escape_html(login_text.lower())}</code>\n"
             f"Пароль: <code>{escape_html(password)}</code>")
     
-    # Создание кнопки
-    keyboard = [[InlineKeyboardButton("Начать заново", callback_data='start')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    update.message.reply_text(text, parse_mode='HTML', reply_markup=reply_markup)
+    update.message.reply_text(text, parse_mode='HTML')
     return ConversationHandler.END
-
-def button(update: Update, context: CallbackContext) -> None:
-    query = update.callback_query
-    query.answer()
-    # Используем update.callback_query.message для получения сообщения
-    context.bot.send_message(chat_id=query.message.chat_id, text="Пожалуйста, введите ваш логин:")
-    return LOGIN
 
 def cancel(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Операция отменена.")
@@ -112,7 +101,6 @@ def main():
     )
     
     dispatcher.add_handler(conv_handler)
-    dispatcher.add_handler(CallbackQueryHandler(button))
     
     updater.start_polling()
     updater.idle()
