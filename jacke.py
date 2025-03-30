@@ -59,7 +59,7 @@ def login(update: Update, context: CallbackContext) -> int:
     login_text = update.message.text
     password = generate_password()
     
-    text = (f"Здравствуйте, {escape_html(login_text)}.\n\n"
+    text = (f"Данные:\n"
             f"Логин: <code>{escape_html(login_text.lower())}</code>\n"
             f"Пароль: <code>{escape_html(password)}</code>")
     
