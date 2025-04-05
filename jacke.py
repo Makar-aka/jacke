@@ -2,7 +2,7 @@ import random
 import os
 import logging
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ConversationHandler
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 from dotenv import load_dotenv
 
 # Загрузка переменных окружения из файла .env
@@ -19,8 +19,8 @@ if not token or not allowed_users:
 ALLOWED_USERS = list(map(int, allowed_users.split(',')))
 
 # Списки символов для генерации пароля
-min_letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "y", "x", "z"]
-max_letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "Y", "X", "Z"]
+min_letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+max_letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 numeral = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 spec = ["*", "-", "_", "+", "?", "%", "~", "#", "$"]
 
@@ -107,6 +107,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
