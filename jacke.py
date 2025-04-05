@@ -74,7 +74,7 @@ def main():
     # Настройка логирования
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levelень) - %(message)s',
+        format='%(asctime)s - %(name)s - %(levelname) - %(message)s',
         handlers=[
             logging.FileHandler(log_file),
             logging.StreamHandler()
