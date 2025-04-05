@@ -41,7 +41,7 @@ def escape_html(text: str) -> str:
     }
     return ''.join(escape_chars.get(char, char) for char in text)
 
-def start(update: Update, context: CallbackContext) -> int:
+def start(update: Update, context) -> int:
     user_id = update.message.from_user.id
     if user_id not in ALLOWED_USERS:
         update.message.reply_text("У вас нет доступа к этому боту.")
@@ -50,7 +50,7 @@ def start(update: Update, context: CallbackContext) -> int:
     update.message.reply_text("Есть че?")
     return LOGIN
 
-def login(update: Update, context: CallbackContext) -> int:
+def login(update: Update, context) -> int:
     user_id = update.message.from_user.id
     if user_id not in ALLOWED_USERS:
         update.message.reply_text("У вас нет доступа к этому боту.")
@@ -66,7 +66,7 @@ def login(update: Update, context: CallbackContext) -> int:
     update.message.reply_text(text, parse_mode='HTML')
     return ConversationHandler.END
 
-def cancel(update: Update, context: CallbackContext) -> int:
+def cancel(update: Update, context) -> int:
     update.message.reply_text("Операция отменена.")
     return ConversationHandler.END
 
@@ -74,7 +74,7 @@ def main():
     # Настройка логирования
     logging.basicConfig(
         level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        format='%(asctime)s - %(name)s - %(levelень) - %(message)s',
         handlers=[
             logging.FileHandler(log_file),
             logging.StreamHandler()
