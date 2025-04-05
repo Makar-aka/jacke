@@ -1,34 +1,36 @@
 import random
 import os
 import logging
+from typing import List, Dict, Any
 from telegram import Update
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
 from dotenv import load_dotenv
 
-# Загрузка переменных окружения из файла .env
-load_dotenv()
-token = os.getenv("TELEGRAM_TOKEN")
-allowed_users = os.getenv("ALLOWED_USERS")
-log_level = os.getenv("LOG_LEVEL", "INFO")
-log_file = os.getenv("LOG_FILE", "bot.log")
-
-if not token or not allowed_users:
-    raise ValueError("Необходимо установить TELEGRAM_TOKEN и ALLOWED_USERS в файле .env")
-
-# Преобразование строки с ID пользователей в список целых чисел
-ALLOWED_USERS = list(map(int, allowed_users.split(',')))
-
-# Списки символов для генерации пароля
-min_letter = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-max_letter = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-numeral = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-spec = ["*", "-", "_", "+", "?", "%", "~", "#", "$"]
-
+# Константы
+PASSWORD_LENGTH = 9
 LOGIN = range(1)
 
-def generate_password():
+# Настройка логирования
+def setup_logging(log_level: str, log_file: str) -> logging.Logger:
+    logging.basicConfig(
+        level=getattr(logging, log_level.upper(), logging.INFO),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(log_file),
+            logging.StreamHandler()
+        ]
+    )
+    return logging.getLogger(__name__)
+
+# Генерация пароля
+def generate_password(length: int = PASSWORD_LENGTH) -> str:
+    min_letter = list("abcdefghijklmnopqrstuvwxyz")
+    max_letter = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    numeral = list("0123456789")
+    spec = list("*-_+?%~#$")
+    
     characters = min_letter + max_letter + numeral + spec
-    password = ''.join(random.choice(characters) for _ in range(9))
+    password = ''.join(random.choice(characters) for _ in range(length))
     return password
 
 def escape_html(text: str) -> str:
@@ -41,7 +43,7 @@ def escape_html(text: str) -> str:
     }
     return ''.join(escape_chars.get(char, char) for char in text)
 
-def start(update: Update, context) -> int:
+def start(update: Update, context: Any) -> int:
     user_id = update.message.from_user.id
     if user_id not in ALLOWED_USERS:
         update.message.reply_text("У вас нет доступа к этому боту.")
@@ -50,7 +52,7 @@ def start(update: Update, context) -> int:
     update.message.reply_text("Есть че?")
     return LOGIN
 
-def login(update: Update, context) -> int:
+def login(update: Update, context: Any) -> int:
     user_id = update.message.from_user.id
     if user_id not in ALLOWED_USERS:
         update.message.reply_text("У вас нет доступа к этому боту.")
@@ -66,22 +68,27 @@ def login(update: Update, context) -> int:
     update.message.reply_text(text, parse_mode='HTML')
     return ConversationHandler.END
 
-def cancel(update: Update, context) -> int:
+def cancel(update: Update, context: Any) -> int:
     update.message.reply_text("Операция отменена.")
     return ConversationHandler.END
 
 def main():
-    # Настройка логирования
-    logging.basicConfig(
-        level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(log_file),
-            logging.StreamHandler()
-        ]
-    )
+    # Загрузка переменных окружения
+    load_dotenv()
+    token = os.getenv("TELEGRAM_TOKEN")
+    allowed_users = os.getenv("ALLOWED_USERS")
+    log_level = os.getenv("LOG_LEVEL", "INFO")
+    log_file = os.getenv("LOG_FILE", "bot.log")
+
+    if not token or not allowed_users:
+        raise ValueError("Необходимо установить TELEGRAM_TOKEN и ALLOWED_USERS в файле .env")
+
+    # Преобразование строки с ID пользователей в список целых чисел
+    global ALLOWED_USERS
+    ALLOWED_USERS = list(map(int, allowed_users.split(',')))
     
-    logger = logging.getLogger(__name__)
+    # Настройка логирования
+    logger = setup_logging(log_level, log_file)
     logger.info("Бот запущен")
     
     request_kwargs = {
@@ -89,21 +96,24 @@ def main():
         'connect_timeout': 10,
     }
     
-    updater = Updater(token, request_kwargs=request_kwargs)
-    dispatcher = updater.dispatcher
-    
-    conv_handler = ConversationHandler(
-        entry_points=[CommandHandler('start', start)],
-        states={
-            LOGIN: [MessageHandler(Filters.text & ~Filters.command, login)],
-        },
-        fallbacks=[CommandHandler('cancel', cancel)],
-    )
-    
-    dispatcher.add_handler(conv_handler)
-    
-    updater.start_polling()
-    updater.idle()
+    try:
+        updater = Updater(token, request_kwargs=request_kwargs)
+        dispatcher = updater.dispatcher
+        
+        conv_handler = ConversationHandler(
+            entry_points=[CommandHandler('start', start)],
+            states={
+                LOGIN: [MessageHandler(Filters.text & ~Filters.command, login)],
+            },
+            fallbacks=[CommandHandler('cancel', cancel)],
+        )
+        
+        dispatcher.add_handler(conv_handler)
+        
+        updater.start_polling()
+        updater.idle()
+    except Exception as e:
+        logger.error(f"Ошибка при запуске бота: {e}")
 
 if __name__ == '__main__':
     main()
