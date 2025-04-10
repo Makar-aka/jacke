@@ -10,6 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Копирование кода
 COPY jacke.py .
-COPY .env .
+
 # Команда запуска
 CMD "python", "jacke.py"
