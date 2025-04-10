@@ -1,6 +1,6 @@
 # Простой генератор пароля.
 ```
-git clone https://github.com/Makar-aka/jacke.git & cd jacke
+git clone https://github.com/Makar-aka/jacke.git && cd jacke
 ```
 ## Создайте .env
 
