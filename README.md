@@ -1,4 +1,4 @@
-# Простой генератор пароля на 9 символов.
+# Простой генератор пароля.
 ```
 git clone https://github.com/Makar-aka/jacke.git && cd jacke
 ```
