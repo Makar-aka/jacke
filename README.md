@@ -33,5 +33,9 @@ services:
        LOG_FILE: ${LOG_FILE}
 ```
 ```
+touch bot.log
+```
+
+```
 docker compose up -d
 ```
