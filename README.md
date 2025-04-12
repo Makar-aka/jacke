@@ -24,16 +24,24 @@ python3 jacke.py
 ```
 services:
   jacke-app:
-    build: https://github.com/Makar-aka/jacke.git 
+    build: https://github.com/Makar-aka/jacke.git
     command: python jacke.py
+    volumes:
+      - ./logs:/app/logs
+      - ./.env:/app/.env
     environment:
-       TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
-       ALLOWED_USERS: ${ALLOWED_USERS}
-       LOG_LEVEL: ${LOG_LEVEL}
-       LOG_FILE: ${LOG_FILE}
+      - TELEGRAM_TOKEN=${TELEGRAM_TOKEN}
+      - ALLOWED_USERS=${ALLOWED_USERS}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_FILE=/app/logs/bot.log
+      - PASSWORD_LENGTH=${PASSWORD_LENGTH}
+    restart: unless-stopped
 ```
 ```
-touch bot.log
+mkdir logs
+```
+```
+touch logs/bot.log
 ```
 
 ```
