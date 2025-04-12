@@ -3,11 +3,12 @@
 git clone https://github.com/Makar-aka/jacke.git && cd jacke
 ```
 ## Создайте .env
-
-TELEGRAM_TOKEN=токен\
-ALLOWED_USERS=123456,1234121 #id админов через запятую.\
-LOG_LEVEL=INFO\
+```
+TELEGRAM_TOKEN=токен
+ALLOWED_USERS=123456,1234121 #id админов через запятую.
+LOG_LEVEL=INFO
 LOG_FILE=bot.log
+```
 ```
 pip3 install -r requirements.txt
 ```
