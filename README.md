@@ -7,7 +7,8 @@ git clone https://github.com/Makar-aka/jacke.git && cd jacke
 TELEGRAM_TOKEN=токен
 ALLOWED_USERS=123456,1234121 #id админов через запятую.
 LOG_LEVEL=INFO
-LOG_FILE=bot.log
+LOG_FILE=logs/bot.log
+PASSWORD_LENGTH=10
 ```
 ```
 pip3 install -r requirements.txt
