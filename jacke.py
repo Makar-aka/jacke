@@ -12,15 +12,28 @@ LOGIN = range(1)
 
 # Настройка логирования
 def setup_logging(log_level: str, log_file: str) -> logging.Logger:
-    logging.basicConfig(
-        level=getattr(logging, log_level.upper(), logging.INFO),
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.FileHandler(log_file),
-            logging.StreamHandler()
-        ]
-    )
-    return logging.getLogger(__name__)
+    logger = logging.getLogger(__name__)
+    logger.setLevel(getattr(logging, log_level.upper(), logging.INFO))
+    
+    # Форматтер для логов
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    
+    # Добавляем обработчик для консоли
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(formatter)
+    logger.addHandler(console_handler)
+    
+    # Пробуем добавить обработчик для файла с обработкой ошибок
+    try:
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+        print(f"Логирование в файл {log_file} успешно настроено")
+    except Exception as e:
+        print(f"Ошибка при настройке логирования в файл {log_file}: {e}")
+        # Продолжаем работу только с выводом в консоль
+    
+    return logger
 
 # Генерация пароля
 def generate_password(length: int = None) -> str:
@@ -87,7 +100,9 @@ def main():
         raise ValueError("Необходимо установить TELEGRAM_TOKEN и ALLOWED_USERS в файле .env")
 
     # Создание папки logs, если её нет
+    print(f"Попытка создать директорию для логов: {os.path.dirname(log_file)}")
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
+    print("Директория создана или уже существует")
 
     # Преобразование строки с ID пользователей в список целых чисел
     global ALLOWED_USERS

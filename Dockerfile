@@ -10,8 +10,8 @@ COPY . /app
 # Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Создаем папку для логов
-RUN mkdir -p /app/logs
+# Создаем папку для логов и устанавливаем права
+RUN mkdir -p /app/logs && chmod 777 /app/logs
 
 # Указываем переменные окружения
 ENV PYTHONUNBUFFERED=1
