@@ -23,7 +23,9 @@ def setup_logging(log_level: str, log_file: str) -> logging.Logger:
     return logging.getLogger(__name__)
 
 # Генерация пароля
-def generate_password(length: int = PASSWORD_LENGTH) -> str:
+def generate_password(length: int = None) -> str:
+    if length is None:
+        length = int(os.getenv("PASSWORD_LENGTH", PASSWORD_LENGTH))
     min_letter = list("abcdefghijklmnopqrstuvwxyz")
     max_letter = list("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
     numeral = list("0123456789")
@@ -32,6 +34,7 @@ def generate_password(length: int = PASSWORD_LENGTH) -> str:
     characters = min_letter + max_letter + numeral + spec
     password = ''.join(random.choice(characters) for _ in range(length))
     return password
+
 
 def escape_html(text: str) -> str:
     escape_chars = {
@@ -78,10 +81,13 @@ def main():
     token = os.getenv("TELEGRAM_TOKEN")
     allowed_users = os.getenv("ALLOWED_USERS")
     log_level = os.getenv("LOG_LEVEL", "INFO")
-    log_file = os.getenv("LOG_FILE", "bot.log")
+    log_file = os.getenv("LOG_FILE", "logs/bot.log")
 
     if not token or not allowed_users:
         raise ValueError("Необходимо установить TELEGRAM_TOKEN и ALLOWED_USERS в файле .env")
+
+    # Создание папки logs, если её нет
+    os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
     # Преобразование строки с ID пользователей в список целых чисел
     global ALLOWED_USERS
@@ -114,6 +120,7 @@ def main():
         updater.idle()
     except Exception as e:
         logger.error(f"Ошибка при запуске бота: {e}")
+
 
 if __name__ == '__main__':
     main()

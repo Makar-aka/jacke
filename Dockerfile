@@ -1,15 +1,20 @@
-# Базовый образ Python
-FROM python:3.11-slim
+# Используем базовый образ Python
+FROM python:3.10-slim
 
-# Рабочая директория
+# Устанавливаем рабочую директорию
 WORKDIR /app
 
-# Установка зависимостей
-COPY requirements.txt .
+# Копируем файлы в контейнер
+COPY . /app
+
+# Устанавливаем зависимости
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Копирование кода
-COPY jacke.py .
+# Создаем папку для логов
+RUN mkdir -p /app/logs
 
-# Команда запуска
-CMD "python", "jacke.py"
+# Указываем переменные окружения
+ENV PYTHONUNBUFFERED=1
+
+# Запускаем приложение
+CMD ["python", "jacke.py"]
